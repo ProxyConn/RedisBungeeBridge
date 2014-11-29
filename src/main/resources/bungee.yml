@@ -1,0 +1,4 @@
+name: RedisBungee
+main: net.portalblock.rbbridge.RedisBungeeBridge
+author: portalBlock
+version: 1.0
