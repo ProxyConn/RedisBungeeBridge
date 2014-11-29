@@ -1,10 +1,7 @@
 package com.imaginarycode.minecraft.redisbungee;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import lombok.NonNull;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -21,23 +18,17 @@ import java.util.*;
  */
 public class RedisBungeeAPI {
 
-    private final List<String> reservedChannels;
     private final API api = APIAccess.getApi();
 
-    RedisBungeeAPI() {
-        this.reservedChannels = ImmutableList.of(
-                "redisbungee-allservers",
-                "redisbungee-" + api.getServerName(),
-                "redisbungee-data"
-        );
-    }
+    RedisBungeeAPI() { }
 
     public final int getPlayerCount() {
         return api.getTotalOnlinePlayers();
     }
 
     public final long getLastOnline(@NonNull UUID player) {
-        return plugin.getDataManager().getLastOnline(player);
+        //return plugin.getDataManager().getLastOnline(player);
+        throw new RuntimeException("Non translated API method getLastOnline was called!");
     }
 
     public final ServerInfo getServerFor(@NonNull UUID player) {
@@ -59,16 +50,20 @@ public class RedisBungeeAPI {
     }
 
     public final Collection<String> getHumanPlayersOnline() {
-        return Collections2.transform(((ImmutableSet<UUID>) getPlayersOnline()).asList(), new Function<UUID, String>() {
-            @Override
-            public String apply(UUID uuid) {
-                return getNameFromUuid(uuid, false);
-            }
-        });
+        LinkedList<String> names = new LinkedList<String>();
+        for(NetworkPlayer player : api.getAllPlayers()){
+            names.add(player.getName());
+        }
+        return names;
     }
 
     public final Multimap<String, UUID> getServerToPlayers() {
-        return plugin.serversToPlayers();
+        ImmutableMultimap.Builder<String, UUID> players = ImmutableMultimap.builder();
+        for(NetworkPlayer player : api.getAllPlayers()){
+            if(player.getServer().equals("Connecting")) continue;
+            players.put(player.getServer(), RedisBungeeBridge.stringToUUID(player.getUuid()));
+        }
+        return players.build();
     }
 
     public final Set<UUID> getPlayersOnServer(@NonNull String server) {
@@ -79,8 +74,12 @@ public class RedisBungeeAPI {
         return uuids;
     }
 
-    public final boolean isPlayerOnline(@NonNull UUID player) {
-        return getLastOnline(player) == 0;
+    public final boolean isPlayerOnline(@NonNull UUID uuid) {
+        for(NetworkPlayer player : api.getAllPlayers()){
+            if(RedisBungeeBridge.stringToUUID(player.getUuid()).equals(uuid))
+                return true;
+        }
+        return false;
     }
 
     public final InetAddress getPlayerIp(@NonNull UUID player) {
@@ -96,15 +95,17 @@ public class RedisBungeeAPI {
     }
 
     public final void sendProxyCommand(@NonNull String command) {
-        plugin.sendProxyCommand("allservers", command);
+        //TODO
+        throw new RuntimeException("Temporarily disabled method sendProxyCommand was called!");
     }
 
     public final void sendProxyCommand(@NonNull String proxyId, @NonNull String command) {
-        plugin.sendProxyCommand(proxyId, command);
+        //TODO
+        throw new RuntimeException("Temporarily disabled method sendProxyCommand was called!");
     }
 
     public final void sendChannelMessage(@NonNull String channel, @NonNull String message) {
-        plugin.sendChannelMessage(channel, message);
+        throw new RuntimeException("Non translated API method sendChannelMessage was called!");
     }
 
     public final String getServerId() {
@@ -112,21 +113,15 @@ public class RedisBungeeAPI {
     }
 
     public final List<String> getAllServers() {
-        //TODO
-        //return plugin.getServerIds();
-        return null;
+        throw new RuntimeException("Non translated API method getAllServers was called!");
     }
 
     public final void registerPubSubChannels(String... channels) {
-        //RedisBungee.getPubSubListener().addChannel(channels);
+        throw new RuntimeException("Non translated API method registerPubSubChannels was called!");
     }
 
     public final void unregisterPubSubChannels(String... channels) {
-        /*for (String channel : channels) {
-            Preconditions.checkArgument(!reservedChannels.contains(channel), "attempting to unregister internal channel");
-        }
-
-        RedisBungee.getPubSubListener().removeChannel(channels);*/
+        throw new RuntimeException("Non translated API method unregisterPubSubChannels was called!");
     }
 
     public final String getNameFromUuid(@NonNull UUID uuid) {
@@ -134,7 +129,13 @@ public class RedisBungeeAPI {
     }
 
     public final String getNameFromUuid(@NonNull UUID uuid, boolean expensiveLookups) {
-        return plugin.getUuidTranslator().getNameFromUuid(uuid, expensiveLookups);
+        for(NetworkPlayer player : api.getAllPlayers()){
+            if(RedisBungeeBridge.stringToUUID(player.getUuid()).equals(uuid))
+                return player.getName();
+        }
+        if(!expensiveLookups) return null;
+        //TODO Call Mojang
+        throw new RuntimeException("Temporarily disabled expensiveLookups getNameFromUuid was called!");
     }
 
     public final UUID getUuidFromName(@NonNull String name) {
@@ -142,7 +143,13 @@ public class RedisBungeeAPI {
     }
 
     public final UUID getUuidFromName(@NonNull String name, boolean expensiveLookups) {
-        return plugin.getUuidTranslator().getTranslatedUuid(name, expensiveLookups);
+        for(NetworkPlayer player : api.getAllPlayers()){
+            if(player.getName().equalsIgnoreCase(name))
+                return RedisBungeeBridge.stringToUUID(player.getUuid());
+        }
+        if(!expensiveLookups) return null;
+        //TODO Call Mojang
+        throw new RuntimeException("Temporarily disabled expensiveLookups getUuidFromName was called!");
     }
 
 }
