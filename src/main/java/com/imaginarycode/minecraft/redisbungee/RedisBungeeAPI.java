@@ -1,6 +1,5 @@
 package com.imaginarycode.minecraft.redisbungee;
 
-import com.google.common.base.Function;
 import com.google.common.collect.*;
 import lombok.NonNull;
 import net.md_5.bungee.api.ProxyServer;
@@ -27,7 +26,6 @@ public class RedisBungeeAPI {
     }
 
     public final long getLastOnline(@NonNull UUID player) {
-        //return plugin.getDataManager().getLastOnline(player);
         throw new RuntimeException("Non translated API method getLastOnline was called!");
     }
 
