@@ -41,7 +41,7 @@ public class RedisBungeeAPI {
     }
 
     public final Set<UUID> getPlayersOnline() {
-        Set<UUID> uuids = Collections.emptySet();
+        Set<UUID> uuids = new HashSet<>();
         for(NetworkPlayer player : api.getAllPlayers()){
             uuids.add(RedisBungeeBridge.stringToUUID(player.getUuid()));
         }
@@ -66,7 +66,7 @@ public class RedisBungeeAPI {
     }
 
     public final Set<UUID> getPlayersOnServer(@NonNull String server) {
-        Set<UUID> uuids = Collections.emptySet();
+        Set<UUID> uuids = new HashSet<>();
         for(NetworkPlayer p : api.getPlayersOnServer(server)){
             uuids.add(RedisBungeeBridge.stringToUUID(p.getUuid()));
         }
@@ -94,13 +94,11 @@ public class RedisBungeeAPI {
     }
 
     public final void sendProxyCommand(@NonNull String command) {
-        //TODO
-        throw new RuntimeException("Temporarily disabled method sendProxyCommand was called!");
+        api.sendProxyCommand("RBAPIBridge", command);
     }
 
     public final void sendProxyCommand(@NonNull String proxyId, @NonNull String command) {
-        //TODO
-        throw new RuntimeException("Temporarily disabled method sendProxyCommand was called!");
+        api.sendProxyCommand("RBAPIBridge", proxyId, command);
     }
 
     public final void sendChannelMessage(@NonNull String channel, @NonNull String message) {
