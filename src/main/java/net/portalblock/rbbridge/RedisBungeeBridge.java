@@ -14,6 +14,8 @@ public class RedisBungeeBridge extends Plugin {
     public void onEnable() {
         getLogger().info("RedisBungeeBridge has been enabled, all RedisBungee API calls should now be translated into ProxyConn API calls.");
         RedisBungee.getApi();
+        getProxy().registerChannel("RedisBungee");
+        getProxy().getPluginManager().registerListener(this, new MessageChannelListener(this));
     }
 
     public static UUID stringToUUID(String uuid) {

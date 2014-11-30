@@ -1,6 +1,7 @@
 RedisBungeeBridge
 =================
-**Expensive UUID look ups are not yet implemented, they should be soon!**
+**Expensive UUID look ups are not yet implemented, they should be soon!<br>This project is not affiliated with RedisBungee nor endorsed
+ by the authors of RedisBungee**
 <br>
 This is a plugin that bridges RedisBungee plugins over to ProxyConn to allow easy and painless transition.
 <br><br>

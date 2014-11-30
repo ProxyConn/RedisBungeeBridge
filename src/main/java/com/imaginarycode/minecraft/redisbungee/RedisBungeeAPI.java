@@ -9,6 +9,7 @@ import net.portalblock.pc.publicapi.APIAccess;
 import net.portalblock.pc.publicapi.NetworkPlayer;
 import net.portalblock.rbbridge.RedisBungeeBridge;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.util.*;
 
@@ -141,6 +142,13 @@ public class RedisBungeeAPI {
     }
 
     public final UUID getUuidFromName(@NonNull String name, boolean expensiveLookups) {
+        if(!ProxyServer.getInstance().getConfig().isOnlineMode()){
+            try{
+                return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes("UTF-8"));
+            }catch (UnsupportedEncodingException e){
+                return null;
+            }
+        }
         for(NetworkPlayer player : api.getAllPlayers()){
             if(player.getName().equalsIgnoreCase(name))
                 return RedisBungeeBridge.stringToUUID(player.getUuid());
