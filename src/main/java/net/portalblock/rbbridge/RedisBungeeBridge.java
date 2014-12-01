@@ -4,11 +4,18 @@ import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Created by portalBlock on 11/29/2014.
  */
 public class RedisBungeeBridge extends Plugin {
+
+    private static Logger logger;
+
+    public static Logger getRBBLogger(){
+        return logger;
+    }
 
     @Override
     public void onEnable() {
@@ -16,6 +23,7 @@ public class RedisBungeeBridge extends Plugin {
         RedisBungee.getApi();
         getProxy().registerChannel("RedisBungee");
         getProxy().getPluginManager().registerListener(this, new MessageChannelListener(this));
+        logger = getLogger();
     }
 
     public static UUID stringToUUID(String uuid) {

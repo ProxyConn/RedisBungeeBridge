@@ -19,8 +19,14 @@ import java.util.*;
 public class RedisBungeeAPI {
 
     private final API api = APIAccess.getApi();
+    private final int INDEX = 2;
 
     RedisBungeeAPI() { }
+
+    private void printWarn(StackTraceElement s, String m){
+        if(s.getClassName().startsWith("net.portalblock")) return;
+        RedisBungeeBridge.getRBBLogger().warning(s.getClassName() + "#" + s.getMethodName() + "(" + s.getLineNumber() + ") accessed RedisBungee method " + m);
+    }
 
     public final int getPlayerCount() {
         return api.getTotalOnlinePlayers();
@@ -31,6 +37,8 @@ public class RedisBungeeAPI {
     }
 
     public final ServerInfo getServerFor(@NonNull UUID player) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getServerFor(UUID)");
         NetworkPlayer p = api.getPlayerByUUID(player);
         if(p == null) return null;
         for(Map.Entry<String, ServerInfo> entry : ProxyServer.getInstance().getServers().entrySet()){
@@ -41,6 +49,8 @@ public class RedisBungeeAPI {
     }
 
     public final Set<UUID> getPlayersOnline() {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getPlayersOnline()");
         Set<UUID> uuids = new HashSet<>();
         for(NetworkPlayer player : api.getAllPlayers()){
             uuids.add(RedisBungeeBridge.stringToUUID(player.getUuid()));
@@ -49,6 +59,8 @@ public class RedisBungeeAPI {
     }
 
     public final Collection<String> getHumanPlayersOnline() {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getHumanPlayersOnline()");
         LinkedList<String> names = new LinkedList<String>();
         for(NetworkPlayer player : api.getAllPlayers()){
             names.add(player.getName());
@@ -57,6 +69,8 @@ public class RedisBungeeAPI {
     }
 
     public final Multimap<String, UUID> getServerToPlayers() {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getServerToPlayers()");
         ImmutableMultimap.Builder<String, UUID> players = ImmutableMultimap.builder();
         for(NetworkPlayer player : api.getAllPlayers()){
             if(player.getServer().equals("Connecting")) continue;
@@ -66,6 +80,8 @@ public class RedisBungeeAPI {
     }
 
     public final Set<UUID> getPlayersOnServer(@NonNull String server) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getPlayersOnServer(String)");
         Set<UUID> uuids = new HashSet<>();
         for(NetworkPlayer p : api.getPlayersOnServer(server)){
             uuids.add(RedisBungeeBridge.stringToUUID(p.getUuid()));
@@ -74,6 +90,8 @@ public class RedisBungeeAPI {
     }
 
     public final boolean isPlayerOnline(@NonNull UUID uuid) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "isPlayerOnline(UUID)");
         for(NetworkPlayer player : api.getAllPlayers()){
             if(RedisBungeeBridge.stringToUUID(player.getUuid()).equals(uuid))
                 return true;
@@ -82,6 +100,9 @@ public class RedisBungeeAPI {
     }
 
     public final InetAddress getPlayerIp(@NonNull UUID player) {
+
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getPlayerIp(UUID)");
         try{
             return (api.getPlayerByUUID(player) != null ? InetAddress.getByName(api.getPlayerByUUID(player).getIp()) : null);
         }catch (Exception ignored){
@@ -90,42 +111,62 @@ public class RedisBungeeAPI {
     }
 
     public final String getProxy(@NonNull UUID player) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getProxy(UUID)");
         return (api.getPlayerByUUID(player) != null ? api.getPlayerByUUID(player).getProxy() : null);
     }
 
     public final void sendProxyCommand(@NonNull String command) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "sendProxyCommand(String)");
         api.sendProxyCommand("RBAPIBridge", command);
     }
 
     public final void sendProxyCommand(@NonNull String proxyId, @NonNull String command) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "sendProxyCommand(String, String)");
         api.sendProxyCommand("RBAPIBridge", proxyId, command);
     }
 
     public final void sendChannelMessage(@NonNull String channel, @NonNull String message) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "sendChannelMessage(String, String)");
         throw new RuntimeException("Non translated API method sendChannelMessage was called!");
     }
 
     public final String getServerId() {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getServerId()");
         return api.getServerName();
     }
 
     public final List<String> getAllServers() {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getAllServers()");
         throw new RuntimeException("Non translated API method getAllServers was called!");
     }
 
     public final void registerPubSubChannels(String... channels) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "registerPubSubChannels(String...)");
         throw new RuntimeException("Non translated API method registerPubSubChannels was called!");
     }
 
     public final void unregisterPubSubChannels(String... channels) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "unregisterPubSubChannels(String...)");
         throw new RuntimeException("Non translated API method unregisterPubSubChannels was called!");
     }
 
     public final String getNameFromUuid(@NonNull UUID uuid) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getNameFromUuid(UUID)");
         return getNameFromUuid(uuid, true);
     }
 
     public final String getNameFromUuid(@NonNull UUID uuid, boolean expensiveLookups) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getNameFromUuid(UUID, boolean)");
         for(NetworkPlayer player : api.getAllPlayers()){
             if(RedisBungeeBridge.stringToUUID(player.getUuid()).equals(uuid))
                 return player.getName();
@@ -136,10 +177,14 @@ public class RedisBungeeAPI {
     }
 
     public final UUID getUuidFromName(@NonNull String name) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getUuidFromName(String)");
         return getUuidFromName(name, true);
     }
 
     public final UUID getUuidFromName(@NonNull String name, boolean expensiveLookups) {
+        StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
+        printWarn(s, "getUuidFromName(String, boolean)");
         if(!ProxyServer.getInstance().getConfig().isOnlineMode()){
             try{
                 return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes("UTF-8"));
