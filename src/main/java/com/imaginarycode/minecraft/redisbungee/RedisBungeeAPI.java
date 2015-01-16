@@ -21,11 +21,20 @@ public class RedisBungeeAPI {
     private final API api = APIAccess.getApi();
     private final int INDEX = 2;
 
-    RedisBungeeAPI() { }
+    private final boolean LOG;
+
+    RedisBungeeAPI() {
+        LOG = Boolean.valueOf(System.getProperty("rbb.log", "false"));
+    }
+
+    private void printWarn(StackTraceElement s, String m, boolean force){
+        if(s.getClassName().startsWith("net.portalblock")) return;
+        if(LOG || force)
+            RedisBungeeBridge.getRBBLogger().warning(s.getClassName() + "#" + s.getMethodName() + "(" + s.getLineNumber() + ") accessed RedisBungee method " + m);
+    }
 
     private void printWarn(StackTraceElement s, String m){
-        if(s.getClassName().startsWith("net.portalblock")) return;
-        RedisBungeeBridge.getRBBLogger().warning(s.getClassName() + "#" + s.getMethodName() + "(" + s.getLineNumber() + ") accessed RedisBungee method " + m);
+        printWarn(s, m, false);
     }
 
     public final int getPlayerCount() {
@@ -130,7 +139,7 @@ public class RedisBungeeAPI {
 
     public final void sendChannelMessage(@NonNull String channel, @NonNull String message) {
         StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
-        printWarn(s, "sendChannelMessage(String, String)");
+        printWarn(s, "sendChannelMessage(String, String)", true);
         throw new RuntimeException("Non translated API method sendChannelMessage was called!");
     }
 
