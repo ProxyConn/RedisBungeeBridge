@@ -18,3 +18,14 @@ Here is a list of methods that will not work, I suggest testing a **copy** of yo
     <li>getLastOnline</li>
 </ul>
 **PLEASE NOTE: Not all features will work, please contact the developer of the (Or me) to check if the required features will work.**
+<br><br>
+**LICENSE:**<br>
+Copyright (c) 2014 portalBlock. This work is provided AS-IS without any warranty.
+You must provide a link back to the original project and clearly point out any changes made to this project.
+This license must be included in all project files.
+Any changes merged with this project are property of the copyright holder but may include the author's name.
+
+<br><br>
+**DISCLAIMER:**<br>
+This plugin is not endorsed or approved by the authors or RedisBungee. RedisBungee is licensed to its authors and assumes no responsibility
+for the use of this plugin. Any problems with this plugin should be directed to its author and not to the authors of RedisBungee.
