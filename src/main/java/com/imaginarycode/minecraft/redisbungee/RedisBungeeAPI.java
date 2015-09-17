@@ -13,6 +13,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.portalblock.pc.publicapi.API;
 import net.portalblock.pc.publicapi.APIAccess;
 import net.portalblock.pc.publicapi.NetworkPlayer;
+import net.portalblock.rbbridge.EventDispatcher;
 import net.portalblock.rbbridge.RedisBungeeBridge;
 
 import java.io.UnsupportedEncodingException;
@@ -144,9 +145,10 @@ public class RedisBungeeAPI {
     }
 
     public final void sendChannelMessage(@NonNull String channel, @NonNull String message) {
+        api.sendPluginMessage(channel, message);
         StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
         printWarn(s, "sendChannelMessage(String, String)", true);
-        throw new RuntimeException("Non translated API method sendChannelMessage was called!");
+        //throw new RuntimeException("Non translated API method sendChannelMessage was called!");
     }
 
     public final String getServerId() {
@@ -162,9 +164,11 @@ public class RedisBungeeAPI {
     }
 
     public final void registerPubSubChannels(String... channels) {
+        for(String chan : channels)
+            api.registerMessageChannel(chan, EventDispatcher.getInstance());
         StackTraceElement s = Thread.currentThread().getStackTrace()[INDEX];
         printWarn(s, "registerPubSubChannels(String...)");
-        throw new RuntimeException("Non translated API method registerPubSubChannels was called!");
+        //throw new RuntimeException("Non translated API method registerPubSubChannels was called!");
     }
 
     public final void unregisterPubSubChannels(String... channels) {

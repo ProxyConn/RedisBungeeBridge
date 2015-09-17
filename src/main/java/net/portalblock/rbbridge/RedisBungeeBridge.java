@@ -8,6 +8,7 @@ package net.portalblock.rbbridge;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.portalblock.pc.publicapi.APIAccess;
 
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ public class RedisBungeeBridge extends Plugin {
         RedisBungee.getApi();
         getProxy().registerChannel("RedisBungee");
         getProxy().getPluginManager().registerListener(this, new MessageChannelListener(this));
+        APIAccess.getApi().registerEventHandler(new EventDispatcher(getProxy(), this));
         logger = getLogger();
     }
 
